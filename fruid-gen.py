@@ -9,7 +9,7 @@ from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
-__version__ = "v2025.31.0"
+__version__ = "v2026.06.0"
 
 # Set your platform name here
 PLATFORM_NAME = "PlatformName"
@@ -18,7 +18,7 @@ PLATFORM_NAME = "PlatformName"
 FIELD_CONFIG = {
     "Chassis Part Number": ("CPN", ["M3"], None),
     "Chassis Serial Number": ("CSN", ["M3"], None),
-    "Chassis Custom Data 1": ("CCD1", ["M3"], None),
+    "Chassis Custom Data 1": ("CCD1", ["M1", "M3"], None),
     "Chassis Custom Data 2": ("CCD2", ["M1", "M3"], 12),
     "Chassis Custom Data 3": ("CCD3", ["M3"], None),
     "Board Mfg": ("BM", ["M1", "M3"], None),
@@ -286,7 +286,7 @@ def standardize_field_name(name):
 
 
 def generate_fru_scripts(excel_file, ict_mode=False):
-    wb = openpyxl.load_workbook(excel_file)
+    wb = openpyxl.load_workbook(excel_file, data_only=True)
     sheet = wb.active
     row_max = sheet.max_row + 1
 
