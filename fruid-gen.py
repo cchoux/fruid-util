@@ -389,14 +389,23 @@ def generate_fru_scripts(excel_file, ict_mode=False):
 
             # Execute script to generate bin and xlsx files
             bin_path = os.path.join(board_pn, f"{board_pn}.bin")
-            subprocess.run(
-                [f"./__{board_pn}.sh", bin_path],
-                cwd=os.path.join(base_dir, "ICT"),
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            os.remove(temp_script_path)
+            try:
+                subprocess.run(
+                    [f"./__{board_pn}.sh", bin_path],
+                    cwd=os.path.join(base_dir, "ICT"),
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+            except subprocess.CalledProcessError as e:
+                print(f"Error running ICT script for {board_pn}:")
+                if e.stdout:
+                    print(e.stdout)
+                if e.stderr:
+                    print(e.stderr)
+                raise
+            finally:
+                os.remove(temp_script_path)
 
     # Create release note
     create_release_note(base_dir, max(versions), board_info)
